@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset ="UTF-8">
+		<title>live2d_for_jokerscriptマニュアル</title>
+	</head>
+	<body>
+		<H2>Live2D Cubism 3 for jokerscriptマニュアル</H2>
+	</br>
+		<H2>live2d for jokerscriptの2.1から3での主な変更点</H2>
+		<p>
+			<b>〇convert_toolを使用しなくなりました</br></b>
+			　　Cubism3SDKからインポート時に、Unityで読み込めるような形式になるため、<FONT color="magenta">convert_toolは使用せず</FONT>モデルファイルをフォルダごとそのままResoucesフォルダにドラッグ＆ドロップするようになりました。</br>
+			</br>
+			<b>〇モデルにアニメーションさせるためのlive2d_motionタグの実装変更を行いました</br></b>
+			　　2.1時点ではstorageで.mtnデータを呼び出す形式でしたが、3からメカニムを使用するため、<FONT color="magenta">MMDモデルのsd_animタグと近い動作</FONT>をするように統一しました。</br>
+			　　そのため、MMDモデル同様、AnimationControllerを作成して頂き、boolでアニメーションを切り替えることとなりました。</br>
+			</br>
+			<b>〇アセットパッケージでのインポートに変更</br></b>
+			　　2.1までは.dllとShaderが入ったResoucesフォルダのインポートがありましたが、3からはアセットパッケージでの配布となるので、各種、必要なものが入ったアセットパッケージでのインポートという形式に変更となりました。</br>
+		  </br>
+		  <b>〇対応モデルについて</br></b>
+			　　<font color="magenta">Live2DCubism2.1Editor以前で作成された.mocファイルは対応しておりません。</font></br>
+			　　Live2DCubism3Editorで作成された.moc3モデルのみ対応しています</br>
+	</p>
+
+
+		<HR>
+
+
+		<H2>Live2Dを使うための準備(Cubism3SDKver)</H2>
+		<p>
+			<FONT color = "magenta">注）Live2Dを使うためにはジョーカースクリプト 0.4.1以上、Unity5.6.0以上が必要です</FONT>
+			</br>
+			</br>
+			添付されているアセットパッケージをジョーカースクリプトのプロジェクトにインポートしてください。</br>
+			<br>
+
+			<FONT color="magenta">
+			【重要】</br>
+			インポートする前に、以下の２つのファイルをプロジェクトから削除してからインポートして下さい。</br>
+			・JOKER/Scripts/Novel/Components/Live2dComponent</br>
+			・JOKER/Scripts/Novel/ObjectSet/Live2dObject</br>
+			</FONT></br>
+
+			この２つのファイルは最初からJOKERSCRIPTに含まれており、インポートで置き換える必要があります。</br>
+			</br>
+			次に、Live2DのページからSDKを入手します。</br>
+			いくつか項目がありますが、Cubism SDK for Unityという項目のボタンをクリックし、ダウンロードします</br>
+			</br>
+			<a href ="https://live2d.github.io/">https://live2d.github.io/</a></br>
+			</br>
+			利用規約に同意した上で、SDKをダウンロードしてください。</br>
+			ダウンロードしたアセットパッケージをドラッグ&ドロップでジョーカースクリプトのプロジェクトにインポートしてください。</br>
+		  </br>
+			<font color="magenta">
+				【重要】</br>
+			   SDKはインポート直後ではdllが読み込まれないため、一度Unityを再起動する必要があります。</br>
+			 </font>
+	  </p>
+		</br>
+
+
+		<H2>Live2Dモデルをインポートする</H2>
+		<p>
+			それでは、ゲームに登場させるLive2Dモデルを準備しましょう。</br>
+			今回はLive2D公式サイトで配布されているデータを使って試してみたいと思います。</br>
+			</br>
+			<a href="http://sites.cybernoids.jp/cubism2/samples">http://sites.cybernoids.jp/cubism2/samples</a></br>
+			<br>
+			魅力的なデータが並んでいますが、今回は「イプシロン」というモデルを使ってみたいと思います。</br>
+			</br>
+			ダウンロードボタンを押してください。</br>
+			</br>
+			<img src="img/modeldownload.png" width=600 style="border:solid 1px gray" /></br>
+			</br>
+			Cubism3SDKはCubism3Editorからエクスポートされたモデルしか対応していません。</br>
+			そのため、Live2Dの公式サイトから、Cubism3Editorをダウンロードし、インストールしてください。</br>
+			Cubism3Editorをインストール後、Epsilon_free.cmoxを開き、「Epsilon_free」というフォルダを新規で作り、</br>
+			moc3ファイルを書き出します。</br>
+			<img src="img/modelexport.png" width=600 style="border:solid 1px gray" /></br>
+			<img src="img/model3datas.png" width=600 style="border:solid 1px gray" /></br>
+		  </br>
+			また、同じようにcanxもCubism3Editorにインポートし、「Epsilon_free」フォルダの下に「motions」フォルダを作成し、</br>
+			モーションシーンを書き出します。</br>
+			<img src="img/motionexport.png" width=600 style="border:solid 1px gray" /></br>
+			<img src="img/motionexport02.png" width=300 style="border:solid 1px gray" /></br>
+			<img src="img/motion3datas.png" width=600 style="border:solid 1px gray" /></br>
+		  </br>次に、JOKER_GAME/live2d内で右クリックを押してNew_Folderを選択し、Resourcesと名前を付け、作成してください。</br>
+			「Resources」フォルダに先ほど作成した「Epsilon_free」フォルダに配置してください。</br>
+			<img src="img/importmodel.png" width=600 style="border:solid 1px gray" /></br>
+		  </br>
+			すると、インポートしたEpsilon_freeのフォルダ内に、プレハブが生成されています。</br>
+			このプレハブをHierarchyにドラッグ&ドロップで追加してください。</br>
+			</br>
+			<img src="img/importmodel02.png" width =600 style="border:solid 1px gray" /></br>
+			</br>
+			</br>
+			その後、Hierarchyに追加したモデルを選択(画像①)し、</br>
+			JOKER_GAME/live2d/Scripts内にあるFadeInOut.csをInspectorにドラッグ&ドロップしてください(画像②)</br>
+			</br>
+			<img src="img/attachscript.png" width=800 style="border:solid 1px gray" /></br>
+			</br>
+			このままでも表示できますが、アニメーションが再生できません。</br>
+			そのため、アニメーションを設定します。</br>
+			Cubism3SDKから表情やポーズはアニメーションの内部に統合される形になったためです。</br>
+			</br>
+			JOKER_GAME/live2D/Resources/Epsilon_free/motionsフォルダを開きます。</br>
+			その後、Hierarchy上にあるEpsilon_freeを選択(画像①)し、Epsilon_free_idle_01.animをドラッグ&ドロップでEpsilon_freeのInspectorにアタッチします(画像②)</br>
+			</br>
+			<img src="img/attachmotion.png" width=800 style="border:solid 1px gray" /></br>
+			</br>最後にヒエラルキーから Epsilon_free をドラッグ＆ドロップでJOKER_GAME/live2D/Resources/　へもって行き、プレハブ化します。</br>
+			ヒエラルキーに残った　Epsilon_free　は削除しておいてください。</br>
+			</br>
+			<img src="img/importresources.png" width=600 style="border:solid 1px gray" /></br>
+			</br>
+			</br>
+			以上でLive2Dモデルを使う準備は整いました。</br>
+			シナリオで以下のスクリプトを記述してください。</br>
+			</br>
+			<pre>
+				<code>
+					</br>
+	[live2d_new name="Epsilon_free" storage="Epsilon_free"]
+	[live2d_show name="Epsilon_free" ]
+					</br>
+				</code>
+			</pre>
+			ゲームを開始してみましょう。</br>
+			モデルが画面に表示されましたね。</br>
+			<img src="img/modelview.png" width=600 style="border:solid 1px gray" /></br>
+			</br>
+			次は、好きなタイミングでキャラクターにポーズをとらせるといった、アニメーションの設定を見ていきましょう。</br>
+	</p>
+		</br></br>
+		<a href="Live2d_for_jokerscript_plugin_manual_02.html">次：Live2Dモデルをアニメーションさせる</a>
+	</body>
+</html>

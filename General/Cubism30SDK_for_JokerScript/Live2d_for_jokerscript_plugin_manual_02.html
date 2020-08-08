@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset ="UTF-8">
+		<title>live2d_for_jokerscriptマニュアルpage.2</title>
+	</head>
+	<body>
+		<H2>Live2Dモデルのアニメーションを変更しよう</H2>
+		<p>
+			<a href="Live2d_for_jokerscript_plugin_manual.html">前回</a>の作業で、イプシロンが登場するところまで作成しました。</br>
+			ただ、今の状態だとアイドリングモーション1つだけで他のモーションに変更できません。</br>
+			そのため、今回はほかのモーションに変更する設定を行いましょう</br>
+			</br>
+			JOKER_GAME/live2d/Resources/Epsilon_free/motions/Epsilon_free.controllerをダブルクリックします。</br>
+			タブルクリックすると、新しくAnimatorタブが現れます。</br>
+			このEpsilon_free.controllerは、前回Epsilon_freeにモーションをドラッグ&ドロップされたときに自動的に作られたものです。</br>
+			</br>
+			<img src="img/animcont.png" width=600 style="border:solid 1px gray" /></br>
+		  </br>
+			今回は、Epsilon_free_m_07.animを使用します</br>
+			</br>
+			Epsilon_free.controllerと同じフォルダにあるEpsilon_free_m_07.animをAnimatorタブにドラッグ&ドロップします。</br>
+		  </br>
+			<img src="img/attachanimation.png" width=600 style="border:solid 1px gray" /></br>
+			<br>
+			以下の画像のように新しいモーションが追加されます。<br>
+			<br>
+			<img src="img/motionlayer.png" width=600 style="border:solid 1px gray" /></br>
+			<br>
+			Epsilon_free_idle_01からEpsilon_free_m_07に状態を変更したいので、Epsilon_free_idle_01を右クリックして「MakeTransition」をクリックします。<br>
+			するとEpsilon_free_idle_01から線が伸びるので、Epsilon_free_m_07をクリックして線を作ります。<br>
+			<br>
+			<img src="img/maketransition.png" width=600 style="border:solid 1px gray" /></br>
+			<br>
+			<br>
+			次に、アニメーター左側にあるParametersタブをクリックし、その下段右側の＋ボタンを押します。そして、boolを選択します。<br>
+			そうすると新しくパラメータが作成されるので、名前を「Epsilon_free_m_07」とします。<br>
+			<img src="img/addbool.png" width=600 style="border:solid 1px gray" /></br>
+			<br>
+			続いて、さきほど作った線をクリックし、Inspector上に表示されるHasExitTimeのチェックボックスを外します。<br>
+			これにチェックが入ったままですと、即座にモーションが切り替わらないためです。<br>
+			そして、Conditionsの＋ボタンを押し、設定を追加します。設定は画像と同じEpsilon_free_m_07をtrueにしてください。<br>
+			<br>
+			<img src="img/addcondition.png" width=800 style="border:solid 1px gray" /></br>
+			<br>
+			これで、準備は完了です。以下のようにシナリオファイルを記述してください。<br>
+			<pre>
+				<code>
+					</br>
+	[live2d_new name="Epsilon_free" storage="Epsilon_free"]
+	[live2d_show name="Epsilon_free" ]
+	次にモーションが変わります[p]
+	[live2d_anim name=Epsilon_free state="Epsilon_free_m_07"]
+					</br>
+				</code>
+			</pre>
+			[live2d_anim]タグはコンディションを切り替える処理を担当します。<br>
+			この場合、Epsilon_freeのEpsilon_free_m_07というコンディションをtrueに変更しています。<br>
+			なので、Epsilon_free_idle_01からEpsilon_free_m_07へモーションが切り替わったというわけです。<br>
+			さっそく、ゲームを再生してみてください。指定のタイミングでイプシロンのモーションが切り替われば成功です<br>
+			<img src="img/changemotion.png" width=800 style="border:solid 1px gray" /></br>
+			<br>
+			ただ、このままだとモーションをIdleモーションに戻すことができません。<br>
+			なので、Idleモーションに戻す方法を確認します。<br>
+			<br>
+			アニメータを開いて、Epsilon_free_m_07を右クリック。MakeTransitionを選択し、Epsilon_free_idle_01に線を追加します。<br>
+			<img src="img/addbacktransition.png" width=600 style="border:solid 1px gray" /></br>
+			<br>
+			その後、作成した線をクリックし、Inspector上のHasExitTimeのチェックを外し、Conditionsの＋ボタンを押します。<br>
+			ここで、最初の時と違うのがfalseを選択するということです。<br>
+			trueになっているパラメータ部分をクリックし、falseにします<br>
+			<br>
+			<img src="img/addbackcondition.png" width=800 style="border:solid 1px gray" /></br>
+			<br>
+			そして、シナリオファイルにIdleモーションに戻る記述を追加します。<br>
+			<pre>
+				<code>
+					</br>
+	[live2d_new name="Epsilon_free" storage="Epsilon_free"]
+	[live2d_show name="Epsilon_free" ]
+	次にモーションが変わります[p]
+	[live2d_anim name=Epsilon_free state="Epsilon_free_m_07"]
+	次にモーションを戻します[p]
+	[live2d_anim name=Epsilon_free state="Epsilon_free_m_07" condition=false]
+					</br>
+				</code>
+			</pre>
+			無事にモーションがIdleモーションに切り替われば成功です。<br>
+			最後の行でEpsilon_free_m_07をfalseにしたので、MakeTransitionで作った矢印を通してモーションが切り替わりました。<br>
+			以上で、Live2Dのアニメーション切り替えは完了です。<br>
+			<br>
+			これを用いると、キャラクターがより多彩に表現できるので、ぜひ使ってみてください<br>
+
+		</p>
+
+	</body>
+</html>
